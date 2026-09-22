@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Фриланс-сайты через ИИ — AI WORK</title>
+<style>
+  :root{
+    --bg:#0a0a11;
+    --bg2:#0d0d16;
+    --card:#14141f;
+    --card2:#16161f;
+    --border:#242435;
+    --text:#f2f2f5;
+    --text-dim:#9a9aab;
+    --text-dim2:#77778a;
+    --accent:#8b5cf6;
+    --accent2:#a78bfa;
+    --accent-soft:rgba(139,92,246,.12);
+    --accent-border:rgba(139,92,246,.35);
+    --green:#34d399;
+    --green-soft:rgba(52,211,153,.08);
+    --red:#f87171;
+    --red-soft:rgba(248,113,113,.08);
+    --orange:#f5a94e;
+    --orange-soft:rgba(245,169,78,.08);
+    --orange-border:rgba(245,169,78,.35);
+    --tg-blue:#2aabee;
+    --tg-blue2:#229ed9;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1100px 700px at 85% -10%, rgba(139,92,246,.16), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(52,211,153,.08), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none;}
+  ul{margin:0;padding:0;list-style:none;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px;
+    padding:12px 24px;
+    background:rgba(10,10,17,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-icon{
+    width:38px;height:38px;border-radius:50%;flex:none;
+    background:linear-gradient(135deg,var(--tg-blue),var(--tg-blue2));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(42,171,238,.35);
+  }
+  .brand-icon svg{width:19px;height:19px;}
+  .brand-text{line-height:1.1;}
+  .brand-name{font-size:15px;font-weight:800;letter-spacing:.3px;}
+  .brand-caption{font-size:9px;font-weight:600;letter-spacing:2px;color:var(--text-dim);text-transform:lowercase;}
+
+  .nav-pills{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+  .pill{
+    display:flex;align-items:center;justify-content:center;
+    min-width:30px;height:30px;padding:0 10px;
+    border-radius:999px;border:1px solid var(--border);
+    background:var(--card);
+    font-size:12px;font-weight:700;color:var(--text-dim);
+    transition:.15s;
+  }
+  .pill:hover{border-color:var(--accent-border);color:var(--text);}
+  .pill.current{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .pill.home{font-size:15px;}
+
+  /* ---------- page shell ---------- */
+  .page{display:none;}
+  .page.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .wrap{max-width:880px;margin:0 auto;padding:48px 22px 100px;}
+
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;border-radius:10px;
+    background:var(--accent-soft);
+    border:1px solid var(--accent-border);
+    color:var(--accent2);
+    font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+    margin-bottom:22px;
+  }
+
+  h1.hero{
+    font-size:clamp(32px,6vw,54px);
+    line-height:1.05;
+    font-weight:900;
+    letter-spacing:-.5px;
+    margin:0 0 18px;
+    text-transform:uppercase;
+  }
+  h1.hero .accent{color:var(--accent2);}
+
+  p.lead{
+    font-size:17px;line-height:1.6;color:var(--text-dim);
+    max-width:640px;margin:0 0 32px;
+  }
+
+  h2.branch-title{
+    font-size:clamp(26px,4.5vw,38px);
+    font-weight:900;text-transform:uppercase;margin:0 0 14px;letter-spacing:-.3px;
+  }
+  p.branch-lead{font-size:15.5px;line-height:1.6;color:var(--text-dim);margin:0 0 26px;max-width:680px;}
+
+  h3.sec-title{font-size:20px;font-weight:800;margin:0;letter-spacing:.2px;}
+  .sec-head{display:flex;align-items:flex-start;gap:14px;margin:0 0 18px;}
+  .sec-num{
+    flex:none;min-width:34px;height:34px;padding:0 6px;
+    border-radius:9px;background:var(--accent-soft);border:1px solid var(--accent-border);
+    color:var(--accent2);font-weight:800;font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sec-sub{font-size:11px;font-weight:800;color:var(--accent2);letter-spacing:1.5px;text-transform:uppercase;margin:0 0 8px;}
+  .hr{border:none;border-top:1px solid var(--border);margin:0 0 20px;}
+
+  section.block{margin:0 0 52px;scroll-margin-top:90px;}
+
+  /* ---------- contents / toc ---------- */
+  .toc-label{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;margin:0 0 14px;}
+  .toc-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .toc-item{
+    display:flex;align-items:center;gap:16px;
+    padding:18px 20px;border-radius:var(--radius);
+    background:var(--card);border:1px solid var(--border);
+    transition:.15s;
+  }
+  .toc-item:hover{border-color:var(--accent-border);transform:translateX(2px);background:var(--card2);}
+  .toc-num{
+    flex:none;width:32px;height:32px;border-radius:9px;
+    background:linear-gradient(135deg,var(--accent),#6d3ff0);
+    color:#fff;font-weight:800;font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .toc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .toc-title{font-weight:700;font-size:15.5px;}
+  .toc-desc{font-size:13.5px;color:var(--text-dim2);}
+  .toc-arrow{flex:none;color:var(--text-dim2);font-size:18px;transition:.15s;}
+  .toc-item:hover .toc-arrow{color:var(--accent2);transform:translateX(3px);}
+  .toc-footnote{font-size:13px;color:var(--text-dim2);border-top:1px solid var(--border);padding-top:16px;margin-top:4px;}
+
+  /* mini sub-toc inside a branch */
+  .subtoc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:34px;}
+  @media(max-width:600px){.subtoc-grid{grid-template-columns:1fr;}}
+  .subtoc-item{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;border-radius:11px;
+    background:var(--card);border:1px solid var(--border);font-size:14px;color:var(--text-dim);
+    transition:.15s;
+  }
+  .subtoc-item:hover{border-color:var(--accent-border);color:var(--text);}
+  .subtoc-item b{color:var(--accent2);font-weight:800;}
+
+  /* ---------- generic cards ---------- */
+  .stack{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+  .item-card{
+    display:flex;gap:14px;padding:16px 18px;border-radius:12px;
+    background:var(--card);border:1px solid var(--border);
+  }
+  .item-num{
+    flex:none;width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),#6d3ff0);
+    color:#fff;font-weight:800;font-size:12.5px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .item-title{font-weight:700;font-size:14.5px;color:var(--accent2);margin-bottom:3px;}
+  .item-text{font-size:14px;line-height:1.55;color:var(--text-dim);}
+
+  .err-card{
+    padding:14px 18px;border-radius:12px;
+    background:var(--red-soft);border:1px solid rgba(248,113,113,.2);
+    display:flex;gap:12px;font-size:14px;line-height:1.5;color:var(--text-dim);
+  }
+  .err-num{flex:none;color:var(--red);font-weight:800;font-size:12.5px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+  @media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+  .col-card{padding:18px 20px;border-radius:12px;background:var(--card);border:1px solid var(--border);border-top:3px solid var(--border);font-size:14px;line-height:1.6;color:var(--text-dim);}
+  .col-card.good{border-top-color:var(--green);}
+  .col-card.bad{border-top-color:var(--red);}
+  .col-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+  .col-card.good .col-label{color:var(--green);}
+  .col-card.bad .col-label{color:var(--red);}
+
+  .task-box{
+    padding:16px 20px;border-radius:12px;margin:6px 0 18px;
+    background:var(--orange-soft);border:1px solid var(--orange-border);
+    font-size:14.5px;line-height:1.6;color:#e7c98f;
+  }
+  .task-box b{color:var(--orange);}
+
+  .note-box{
+    padding:16px 20px;border-radius:0 12px 12px 0;margin:6px 0 18px;
+    background:var(--card);border-left:3px solid var(--accent);
+    font-size:14.5px;line-height:1.6;color:var(--text-dim);
+  }
+
+  .template-box{
+    padding:20px 22px;border-radius:12px;margin:6px 0 22px;
+    background:var(--card2);border:1px solid var(--accent-border);
+  }
+  .template-label{font-size:11px;font-weight:800;letter-spacing:1.5px;color:var(--accent2);text-transform:uppercase;margin-bottom:10px;}
+  .template-box pre{
+    white-space:pre-wrap;font-family:inherit;font-size:14px;line-height:1.65;color:var(--text);margin:0;
+  }
+
+  .quote-box{
+    position:relative;padding:26px 24px;border-radius:16px;margin:28px 0 8px;
+    background:linear-gradient(135deg,rgba(139,92,246,.10),rgba(52,211,153,.06));
+    border:1px solid transparent;
+    background-clip:padding-box;
+    text-align:center;
+  }
+  .quote-box::before{
+    content:"";position:absolute;inset:0;border-radius:16px;padding:1px;
+    background:linear-gradient(120deg,var(--accent),var(--green),var(--accent));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    pointer-events:none;
+  }
+  .quote-box p{margin:0;font-size:16px;font-weight:800;line-height:1.6;}
+  .quote-box .hl{color:var(--accent2);}
+
+  table.data-table{width:100%;border-collapse:collapse;margin-bottom:18px;font-size:14px;overflow:hidden;border-radius:12px;}
+  table.data-table th{
+    text-align:left;padding:12px 16px;background:var(--accent-soft);
+    color:var(--accent2);font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:800;
+  }
+  table.data-table td{padding:12px 16px;border-top:1px solid var(--border);color:var(--text-dim);background:var(--card);}
+  table.data-table tr:first-child td{border-top:none;}
+
+  .mask-card{padding:18px 20px;border-radius:12px;background:var(--card);border:1px solid var(--border);margin-bottom:14px;}
+  .mask-card .mask-title{font-weight:700;font-size:14.5px;margin-bottom:12px;}
+  .mask-row{display:flex;gap:12px;padding:7px 0;font-size:13.8px;line-height:1.5;color:var(--text-dim);border-top:1px solid var(--border);}
+  .mask-row:first-of-type{border-top:none;}
+  .mask-chip{
+    flex:none;align-self:flex-start;
+    font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+    padding:3px 8px;border-radius:6px;color:var(--text);
+    background:var(--card2);border:1px solid var(--border);
+    min-width:96px;text-align:center;
+  }
+  .checklist{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+  .checklist li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--text-dim);padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;}
+  .checklist .box{flex:none;width:16px;height:16px;border-radius:4px;border:1.5px solid var(--accent2);margin-top:2px;}
+
+  .dash-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+  .dash-list li{font-size:14.5px;line-height:1.6;color:var(--text-dim);padding-left:16px;position:relative;}
+  .dash-list li::before{content:"–";position:absolute;left:0;color:var(--accent2);font-weight:800;}
+
+  /* ---------- footer nav ---------- */
+  .branch-tag{font-size:11px;font-weight:800;letter-spacing:2px;color:var(--accent2);text-transform:uppercase;margin-bottom:10px;}
+  .footer-nav{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    margin-top:46px;padding-top:24px;border-top:1px solid var(--border);
+  }
+  .nav-btn{
+    display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;
+    background:var(--card);border:1px solid var(--border);font-size:13.5px;font-weight:700;
+    transition:.15s;
+  }
+  .nav-btn:hover{border-color:var(--accent-border);background:var(--card2);}
+  .nav-btn.home{color:var(--text-dim);}
+  .page-footer{text-align:center;color:var(--text-dim2);font-size:12px;margin-top:36px;letter-spacing:.3px;}
+
+  /* ---------- cover hero brand block ---------- */
+  .hero-brand{display:flex;align-items:center;gap:16px;margin-bottom:40px;}
+  .hero-brand .brand-icon{width:56px;height:56px;}
+  .hero-brand .brand-icon svg{width:27px;height:27px;}
+  .hero-brand .brand-name{font-size:26px;font-weight:900;letter-spacing:.5px;}
+  .hero-brand .brand-caption{font-size:11px;letter-spacing:4px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="#cover">
+    <span class="brand-icon">
+      <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M198 62L23 132c-9 4-9 10-2 13l45 14 17 55c2 6 4 9 9 9 4 0 6-2 9-5l22-21 46 34c8 5 14 3 16-7l30-140c3-13-5-18-15-13z" fill="#fff"/>
+        <path d="M90 149l90-57c4-3 8-1 5 2l-73 66-3 33-15-44z" fill="#c9e6fb"/>
+      </svg>
+    </span>
+    <span class="brand-text">
+      <span class="brand-name">AI WORK</span><br>
+      <span class="brand-caption">ai work</span>
+    </span>
+  </a>
+  <nav class="nav-pills" id="navPills">
+    <a class="pill home" href="#cover" title="Оглавление">☰</a>
+    <a class="pill" data-p="vetka-1" href="#vetka-1">1</a>
+    <a class="pill" data-p="vetka-2" href="#vetka-2">2</a>
+    <a class="pill" data-p="vetka-3" href="#vetka-3">3</a>
+    <a class="pill" data-p="vetka-4" href="#vetka-4">4</a>
+    <a class="pill" data-p="vetka-5" href="#vetka-5">5</a>
+    <a class="pill" data-p="vetka-6" href="#vetka-6">6</a>
+  </nav>
+</div>
+
+<!-- ======================= COVER ======================= -->
+<div class="page" id="page-cover">
+  <div class="wrap">
+
+    <div class="hero-brand">
+      <span class="brand-icon">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M198 62L23 132c-9 4-9 10-2 13l45 14 17 55c2 6 4 9 9 9 4 0 6-2 9-5l22-21 46 34c8 5 14 3 16-7l30-140c3-13-5-18-15-13z" fill="#fff"/>
+          <path d="M90 149l90-57c4-3 8-1 5 2l-73 66-3 33-15-44z" fill="#c9e6fb"/>
+        </svg>
+      </span>
+      <span>
+        <span class="brand-name" style="display:block;">AI WORK</span>
+        <span class="brand-caption" style="display:block;">ai work</span>
+      </span>
+    </div>
+
+    <div class="eyebrow">Курс для новичков · 6 веток</div>
+    <h1 class="hero">Фриланс-сайты<br>через <span class="accent">ИИ</span></h1>
+    <p class="lead">Система для новичка: как находить B2B-клиентов, продавать разработку сайтов и делать её в 2 раза быстрее с помощью ИИ. Без сложного жаргона — прямо и по делу, с заданием в конце каждой ветки.</p>
+
+    <div class="toc-label">Содержание</div>
+    <div class="toc-grid">
+      <a class="toc-item" href="#vetka-1"><span class="toc-num">1</span><span class="toc-body"><span class="toc-title">Поиск клиентов</span><span class="toc-desc">где искать бизнес, которому нужен сайт</span></span><span class="toc-arrow">→</span></a>
+      <a class="toc-item" href="#vetka-2"><span class="toc-num">2</span><span class="toc-body"><span class="toc-title">Питчи и КП</span><span class="toc-desc">письмо и предложение, которые читают</span></span><span class="toc-arrow">→</span></a>
+      <a class="toc-item" href="#vetka-3"><span class="toc-num">3</span><span class="toc-body"><span class="toc-title">Цены</span><span class="toc-desc">3 модели, как не работать за спасибо</span></span><span class="toc-arrow">→</span></a>
+      <a class="toc-item" href="#vetka-4"><span class="toc-num">4</span><span class="toc-body"><span class="toc-title">ИИ в коде</span><span class="toc-desc">5 точек ускорения разработки</span></span><span class="toc-arrow">→</span></a>
+      <a class="toc-item" href="#vetka-5"><span class="toc-num">5</span><span class="toc-body"><span class="toc-title">Переговоры</span><span class="toc-desc">возражения и структура контракта</span></span><span class="toc-arrow">→</span></a>
+      <a class="toc-item" href="#vetka-6"><span class="toc-num">6</span><span class="toc-body"><span class="toc-title">Инструменты</span><span class="toc-desc">минимальный стек и чек-лист</span></span><span class="toc-arrow">→</span></a>
+    </div>
+    <p class="toc-footnote">Каждая ветка — это не теория, а конкретное действие. Прочитал → сделал задание → перешёл дальше.</p>
+  </div>
+</div>
+
+<!-- ======================= VETKA 1 ======================= -->
+<div class="page" id="page-vetka-1">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 1 из 6</div>
+    <h2 class="branch-title">Ветка 1: Поиск клиентов</h2>
+    <p class="branch-lead">клиент не приходит сам. если сидишь и ждёшь на бирже фриланса — сидишь без денег. система поиска ниже даёт 15–20 тёплых лидов в неделю без бюджета на рекламу.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v1-01"><b>01</b>&nbsp; карта площадок поиска</a>
+      <a class="subtoc-item" href="#v1-02"><b>02</b>&nbsp; сигналы «здесь есть деньги»</a>
+      <a class="subtoc-item" href="#v1-03"><b>03</b>&nbsp; холодные письма, которые открывают</a>
+      <a class="subtoc-item" href="#v1-04"><b>04</b>&nbsp; ускорение через ИИ</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v1-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">Карта площадок поиска</h3></div>
+      <div class="sec-sub">зачем это нужно</div>
+      <p class="item-text" style="margin-bottom:18px;">без карты каналов ты стреляешь наугад и выгораешь после первых 10 писем без ответа. с картой ты знаешь, где именно сидит твой клиент, и не тратишь время на площадки, где его нет.</p>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">LinkedIn</div><div class="item-text">ищи по должности «Founder / Owner / Marketing Manager» + отрасль + город. в поиске работают операторы: "small business" AND "website"</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">Google Карты / 2GIS</div><div class="item-text">локальный бизнес с хорошим рейтингом и отзывами, но без сайта — или ссылка ведёт прямо на Instagram</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">Instagram-аккаунты бизнеса</div><div class="item-text">в шапке профиля только номер телефона, нет ссылки на сайт, но есть активность и заказы в комментариях</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">Тематические чаты и форумы</div><div class="item-text">предприниматели сами пишут «посоветуйте разработчика» — заходи туда раз в 2-3 дня</div></div></div>
+        <div class="item-card"><span class="item-num">5</span><div><div class="item-title">Рекомендации от клиентов</div><div class="item-text">после первого успешного проекта всегда проси 2 контакта — это самые тёплые лиды, которые у тебя будут</div></div></div>
+      </div>
+      <div class="task-box"><b>задание:</b> составь таблицу минимум из 30 компаний по 3 разным каналам (по 10 на каждый). отметь у кого сайта нет вообще, а у кого есть, но плохой.</div>
+    </section>
+
+    <section class="block" id="v1-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Сигналы «здесь есть деньги»</h3></div>
+      <div class="sec-sub">как заполнять</div>
+      <p class="item-text" style="margin-bottom:18px;">не каждый бизнес с плохим сайтом — реальный клиент. нужно отличать тех, кто заплатит, от тех, кто будет тянуть месяцами «бесплатно, но потом».</p>
+      <div class="two-col">
+        <div class="col-card good"><div class="col-label">хороший лид</div>работает больше года, есть отзывы и активные соцсети, конкуренты уже вложились в свой сайт, в штате от 3 человек</div>
+        <div class="col-card bad"><div class="col-label">плохой лид</div>«друг обещал сделать бесплатно», просит скидку ещё до брифа, нет постов больше месяца, отвечает раз в неделю</div>
+      </div>
+      <div class="sec-sub" style="margin-top:8px;">частые ошибки</div>
+      <div class="stack">
+        <div class="err-card"><span class="err-num">01</span>писать всем подряд без фильтра — трата времени на тех, кто не заплатит</div>
+        <div class="err-card"><span class="err-num">02</span>игнорировать растущий бизнес с плохим сайтом — это как раз золотой лид</div>
+        <div class="err-card"><span class="err-num">03</span>бояться писать «слишком крупным» компаниям — у них обычно и есть бюджет</div>
+      </div>
+      <div class="task-box"><b>задание:</b> возьми таблицу из первой ветки и вычеркни всех, кто не проходит хотя бы 2 из 4 критериев «хорошего лида».</div>
+    </section>
+
+    <section class="block" id="v1-03">
+      <div class="sec-head"><span class="sec-num">03</span><h3 class="sec-title">Холодные письма, которые открывают</h3></div>
+      <div class="sec-sub">зачем это нужно</div>
+      <p class="item-text" style="margin-bottom:18px;">большинство холодных писем удаляют за 3 секунды. тема и первая строка решают, дочитают ли до конца — не рассказывай в них про себя, покажи, что заметил конкретную проблему.</p>
+      <div class="template-box">
+        <div class="template-label">шаблон холодного письма</div>
+<pre>Тема: Заметил кое-что на сайте {{компания}}
+
+Привет, {{имя}}! Смотрел сайт {{компания}} и заметил, что {{конкретная проблема — например: форма заявки не открывается на телефоне}}. Это может стоить вам клиентов, которые заходят с мобильного — а это обычно ~70% трафика.
+
+Я делаю сайты для {{отрасль}} и обычно закрываю такие вещи за 1-2 недели. Могу за 5 минут показать, как бы выглядел обновлённый вариант главной страницы — бесплатно, без обязательств.
+
+Интересно посмотреть?
+
+{{ваше имя}} · {{ссылка на 1-2 примера работ}}</pre>
+      </div>
+      <div class="sec-sub">частые ошибки в письмах</div>
+      <div class="stack">
+        <div class="err-card"><span class="err-num">01</span>пишут про себя в первом предложении вместо проблемы клиента</div>
+        <div class="err-card"><span class="err-num">02</span>нет конкретики — «ваш сайт можно улучшить» вместо точного бага</div>
+        <div class="err-card"><span class="err-num">03</span>сразу просят созвон на 30 минут — страшно для незнакомого человека</div>
+        <div class="err-card"><span class="err-num">04</span>нет ссылки на примеры работ — доверия ноль</div>
+      </div>
+      <div class="task-box"><b>задание:</b> напиши и отправь 10 писем сегодня по шаблону выше, в каждое вставь свою деталь про конкретную компанию.</div>
+    </section>
+
+    <section class="block" id="v1-04">
+      <div class="sec-head"><span class="sec-num">04</span><h3 class="sec-title">Ускорение через ИИ</h3></div>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">генерация списка ниш</div><div class="item-text">попроси Claude сгенерировать 50 типов бизнеса в твоём городе, которым обычно нужен сайт</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">анализ болей</div><div class="item-text">скинь скриншот или описание сайта клиента — попроси за 10 секунд выделить 3 конкретные проблемы</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">массовая персонализация</div><div class="item-text">одна структура письма — ИИ подставляет детали под каждую компанию из твоего списка</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">приоритизация</div><div class="item-text">попроси отсортировать список по вероятности ответа — сначала пиши самым тёплым</div></div></div>
+      </div>
+      <div class="quote-box">
+        <p>холодное письмо — это не спам.<br>это <span class="hl">точный удар по проблеме</span>, которую видит только тот, кто присмотрелся.<br>присмотрись — и клиент ответит сам.</p>
+      </div>
+    </section>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#cover">☰ Оглавление</a>
+      <a class="nav-btn" href="#vetka-2">Ветка 2: Питчи и КП →</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<!-- ======================= VETKA 2 ======================= -->
+<div class="page" id="page-vetka-2">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 2 из 6</div>
+    <h2 class="branch-title">Ветка 2: Питчи и КП</h2>
+    <p class="branch-lead">клиент ответил — не слейте тёплый лид скучным предложением. КП решает, купят у вас или у того, кто прислал предложение понятнее и увереннее.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v2-01"><b>01</b>&nbsp; формула питча</a>
+      <a class="subtoc-item" href="#v2-02"><b>02</b>&nbsp; черновик ИИ vs финальная версия</a>
+      <a class="subtoc-item" href="#v2-03"><b>03</b>&nbsp; структура КП</a>
+      <a class="subtoc-item" href="#v2-04"><b>04</b>&nbsp; частые ошибки</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v2-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">Формула питча</h3></div>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">внимание</div><div class="item-text">зацепи конкретной деталью про них: «заметил, что форма заявки не открывается на iPhone»</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">интерес</div><div class="item-text">покажи, что понимаешь бизнес: «для салонов красоты главное — быстрая форма записи»</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">желание</div><div class="item-text">покажи результат, а не процесс: «после обновления клиенты будут бронировать в 2 клика»</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">действие</div><div class="item-text">один простой следующий шаг: «скиньте 15 минут на видеозвонок на этой неделе?»</div></div></div>
+      </div>
+    </section>
+
+    <section class="block" id="v2-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Черновик ИИ vs финальная версия</h3></div>
+      <div class="sec-sub">как использовать Claude правильно</div>
+      <p class="item-text" style="margin-bottom:18px;">не проси «напиши питч» с нуля — получится обезличенный текст. сначала скинь описание компании клиента, попроси выделить 3 проблемы и 3 выгоды, и только потом собирай письмо по формуле AIDA. финальную версию всегда правь вручную под свой голос.</p>
+      <div class="mask-card">
+        <div class="mask-title">пример: питч для стоматологии</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--red);border-color:rgba(248,113,113,.3);">черновик ии</span>«Здравствуйте! Мы предлагаем услуги по веб-разработке для вашей компании. Наша команда создаёт современные сайты с использованием передовых технологий.»</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--green);border-color:rgba(52,211,153,.3);">после правки</span>«Привет! Заметил, что на вашем сайте форма записи открывается только через звонок — а конкуренты рядом уже принимают запись онлайн. Могу за 5 минут показать, как выглядела бы кнопка «Записаться» прямо на главной?»</div>
+      </div>
+    </section>
+
+    <section class="block" id="v2-03">
+      <div class="sec-head"><span class="sec-num">03</span><h3 class="sec-title">Структура КП</h3></div>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">о задаче</div><div class="item-text">2-3 предложения: что видим, какая проблема</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">решение</div><div class="item-text">что конкретно сделаем — разделы сайта, функционал</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">примеры</div><div class="item-text">2-3 ссылки на похожие проекты или референсы</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">этапы и сроки</div><div class="item-text">дизайн (3 дня) → вёрстка (5 дней) → правки (2 дня) → запуск</div></div></div>
+        <div class="item-card"><span class="item-num">5</span><div><div class="item-title">стоимость и следующий шаг</div><div class="item-text">один понятный пакет или 3 на выбор + условия оплаты + «готовы начать?»</div></div></div>
+      </div>
+      <div class="note-box">держи КП на одной странице. длинные КП с юридическим языком пугают малый бизнес — им нужна ясность, а не 10 страниц условий.</div>
+    </section>
+
+    <section class="block" id="v2-04">
+      <div class="sec-head"><span class="sec-num">04</span><h3 class="sec-title">Частые ошибки</h3></div>
+      <div class="stack">
+        <div class="err-card"><span class="err-num">01</span>продают процесс («используем React, Figma») вместо результата («клиенты будут находить вас в Google»)</div>
+        <div class="err-card"><span class="err-num">02</span>присылают КП без цены — «обсудим отдельно» тормозит сделку и убивает интерес</div>
+        <div class="err-card"><span class="err-num">03</span>не указывают срок действия предложения — сделка растягивается на месяцы</div>
+      </div>
+      <div class="task-box"><b>задание:</b> возьми одного клиента, который ответил (или гипотетического), и напиши для него полное КП по структуре выше — черновик через Claude, финал своим голосом.</div>
+      <div class="quote-box">
+        <p>клиент не покупает сайт.<br>клиент покупает <span class="hl">результат</span> — заявки, звонки, продажи.<br>пишите про это, а не про технологии.</p>
+      </div>
+    </section>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#vetka-1">← Ветка 1: Поиск клиентов</a>
+      <a class="nav-btn" href="#vetka-3">Ветка 3: Цены →</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<!-- ======================= VETKA 3 ======================= -->
+<div class="page" id="page-vetka-3">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 3 из 6</div>
+    <h2 class="branch-title">Ветка 3: Цены</h2>
+    <p class="branch-lead">цена ниже себестоимости — не скидка, а долг перед самим собой. посчитай один раз, называй уверенно и не извиняйся за свою ставку.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v3-01"><b>01</b>&nbsp; 3 модели ценообразования</a>
+      <a class="subtoc-item" href="#v3-02"><b>02</b>&nbsp; как считать минималку</a>
+      <a class="subtoc-item" href="#v3-03"><b>03</b>&nbsp; пакеты вместо одной цены</a>
+      <a class="subtoc-item" href="#v3-04"><b>04</b>&nbsp; как поднимать цены</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v3-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">3 модели ценообразования</h3></div>
+      <div class="stack">
+        <div class="item-card"><div><div class="item-title">почасовая</div><div class="item-text">для небольших правок, поддержки, неясного объёма работы. честно оплачивается время, но клиенту сложно предсказать бюджет.</div></div></div>
+        <div class="item-card"><div><div class="item-title">за проект (fix)</div><div class="item-text">для сайта с понятным ТЗ — визитка, лендинг, простой каталог. клиенту сразу понятна цена; риск в том, чтобы не занизить объём.</div></div></div>
+        <div class="item-card"><div><div class="item-title">retainer (подписка)</div><div class="item-text">для долгосрочной поддержки и мелких доработок. стабильный доход каждый месяц, но нужно доверие клиента.</div></div></div>
+      </div>
+      <div class="note-box">для новичка лучшая стратегия: первые проекты — «за проект» с чётким ТЗ, а когда появятся постоянные клиенты — предлагайте им retainer на поддержку.</div>
+    </section>
+
+    <section class="block" id="v3-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Как считать минималку</h3></div>
+      <div class="template-box">
+        <div class="template-label">простая формула</div>
+        <pre>1. сколько вам нужно зарабатывать в месяц (после налогов)?
+2. сколько часов в месяц вы реально готовы работать на клиентов? (не 160 — вычтите поиск клиентов, переписку, обучение → ~80-100ч)
+3. (нужный доход) ÷ (реальные оплачиваемые часы) = минимальная часовая ставка
+4. никогда не берите проект дешевле этой ставки, даже «для портфолио»</pre>
+      </div>
+    </section>
+
+    <section class="block" id="v3-03">
+      <div class="sec-head"><span class="sec-num">03</span><h3 class="sec-title">Пакеты вместо одной цены</h3></div>
+      <p class="item-text" style="margin-bottom:18px;">психологический приём, который реально работает: предлагайте не одну цену, а 3 пакета. большинство клиентов выбирают средний — но у них появляется ощущение выбора, а не давления.</p>
+      <div class="stack">
+        <div class="item-card"><div><div class="item-title">базовый</div><div class="item-text">одностраничный лендинг, без сложной логики</div></div></div>
+        <div class="item-card"><div><div class="item-title">стандарт</div><div class="item-text">3-5 страниц, форма заявки, интеграция с почтой/CRM</div></div></div>
+        <div class="item-card"><div><div class="item-title">про</div><div class="item-text">+ SEO-настройка, аналитика, 1 месяц поддержки в подарок</div></div></div>
+      </div>
+      <div class="task-box"><b>задание:</b> посчитайте свою минимальную часовую ставку по формуле выше. оформите 3 пакета услуг с ценами.</div>
+    </section>
+
+    <section class="block" id="v3-04">
+      <div class="sec-head"><span class="sec-num">04</span><h3 class="sec-title">Как поднимать цены</h3></div>
+      <div class="stack">
+        <div class="err-card"><span class="err-num">01</span>не занижайте цену на переговорах больше, чем на 10-15%</div>
+        <div class="err-card"><span class="err-num">02</span>если клиент торгуется сильнее — уберите часть объёма работы, а не снижайте ставку за тот же объём</div>
+        <div class="err-card"><span class="err-num">03</span>повышайте прайс каждые 3-5 проектов минимум на 10% — рынок и опыт растут вместе</div>
+      </div>
+      <div class="quote-box">
+        <p>клиент, который торгуется вас до нуля — не ваш клиент.<br>ваш клиент — тот, кто видит <span class="hl">ценность</span> и платит за неё, не за часы.</p>
+      </div>
+    </section>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#vetka-2">← Ветка 2: Питчи и КП</a>
+      <a class="nav-btn" href="#vetka-4">Ветка 4: ИИ в коде →</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<!-- ======================= VETKA 4 ======================= -->
+<div class="page" id="page-vetka-4">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 4 из 6</div>
+    <h2 class="branch-title">Ветка 4: ИИ в коде</h2>
+    <p class="branch-lead">тот, кто делает сайт в 2 раза быстрее, берёт в 2 раза больше клиентов за тот же месяц. вот 5 точек, где ИИ экономит часы, а не минуты.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v4-01"><b>01</b>&nbsp; 5 способов ускорения</a>
+      <a class="subtoc-item" href="#v4-02"><b>02</b>&nbsp; инструменты</a>
+      <a class="subtoc-item" href="#v4-03"><b>03</b>&nbsp; частые ошибки</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v4-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">5 способов ускорения на 50-100%</h3></div>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">компоненты и вёрстка</div><div class="item-text">опиши ИИ нужную секцию — «герой-блок с заголовком, кнопкой и формой email, минимализм, синие акценты» — получи рабочий код за секунды</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">контент и тексты</div><div class="item-text">сгенерируй черновик текстов (заголовки, услуги, FAQ) на основе краткого брифа клиента за 10 минут вместо недель переписки</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">seo-база на автомате</div><div class="item-text">мета-теги, alt-тексты, структура заголовков H1-H3 под ключевые запросы ниши — то, что раньше делал отдельный специалист</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">автотесты и проверка</div><div class="item-text">чек-лист перед сдачей: мобильная адаптивность, скорость, битые ссылки, формы — меньше доработок после сдачи</div></div></div>
+        <div class="item-card"><span class="item-num">5</span><div><div class="item-title">рефакторинг и дебаг</div><div class="item-text">застряли на баге — вставьте код в Claude. час гугления превращается в 2-3 минуты</div></div></div>
+      </div>
+    </section>
+
+    <section class="block" id="v4-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Инструменты</h3></div>
+      <table class="data-table">
+        <tr><th>Инструмент</th><th>Для чего</th></tr>
+        <tr><td>Claude / Claude Code</td><td>компоненты, тексты, дебаг, рефакторинг</td></tr>
+        <tr><td>Cursor</td><td>ИИ прямо в редакторе кода, автодополнение целыми блоками</td></tr>
+        <tr><td>v0 / Vercel AI</td><td>быстрый прототип дизайна из текстового описания</td></tr>
+      </table>
+    </section>
+
+    <section class="block" id="v4-03">
+      <div class="sec-head"><span class="sec-num">03</span><h3 class="sec-title">Частые ошибки</h3></div>
+      <div class="stack">
+        <div class="err-card"><span class="err-num">01</span>сдают код ИИ без проверки — баги и «галлюцинации» остаются на совести клиента</div>
+        <div class="err-card"><span class="err-num">02</span>копируют общий текст ИИ без персонализации под бизнес клиента</div>
+        <div class="err-card"><span class="err-num">03</span>не проверяют мобильную версию и доступность после генерации</div>
+      </div>
+      <div class="task-box"><b>задание:</b> соберите простой лендинг (герой-блок, услуги, форма заявки) полностью с помощью ИИ-инструментов за 2 часа. засеките время.</div>
+      <div class="note-box">правило: ИИ даёт черновик за минуты, вы добавляете 20% ручной доводки, которая делает сайт «живым» под клиента. именно эти 20% — ваша реальная ценность.</div>
+    </section>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#vetka-3">← Ветка 3: Цены</a>
+      <a class="nav-btn" href="#vetka-5">Ветка 5: Переговоры →</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<!-- ======================= VETKA 5 ======================= -->
+<div class="page" id="page-vetka-5">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 5 из 6</div>
+    <h2 class="branch-title">Ветка 5: Переговоры</h2>
+    <p class="branch-lead">возражение — это сомнение, которое клиент говорит вслух, чтобы его убедили. умеешь отвечать — закрываешь в 2 раза больше сделок. не умеешь — теряешь клиентов на созвоне.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v5-01"><b>01</b>&nbsp; карта возражений</a>
+      <a class="subtoc-item" href="#v5-02"><b>02</b>&nbsp; что под маской</a>
+      <a class="subtoc-item" href="#v5-03"><b>03</b>&nbsp; структура контракта</a>
+      <a class="subtoc-item" href="#v5-04"><b>04</b>&nbsp; как закрывать сделку</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v5-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">Карта возражений фриланс-клиента</h3></div>
+      <div class="stack">
+        <div class="item-card"><span class="item-num">1</span><div><div class="item-title">деньги</div><div class="item-text">«дорого» · «у знакомого дешевле» · «сейчас не время тратить»</div></div></div>
+        <div class="item-card"><span class="item-num">2</span><div><div class="item-title">доверие</div><div class="item-text">«я вас не знаю» · «уже пробовал похожее — не помогло» · «а вдруг пропадёте после оплаты»</div></div></div>
+        <div class="item-card"><span class="item-num">3</span><div><div class="item-title">время</div><div class="item-text">«подумаю» · «сейчас нет времени разбираться» · «вернёмся к этому позже»</div></div></div>
+        <div class="item-card"><span class="item-num">4</span><div><div class="item-title">согласование</div><div class="item-text">«надо посоветоваться с партнёром» · «команда должна одобрить»</div></div></div>
+      </div>
+    </section>
+
+    <section class="block" id="v5-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Что под маской</h3></div>
+      <p class="item-text" style="margin-bottom:18px;">разложи каждое возражение на 3 уровня: <b>поверхность</b> (что сказали), <b>маска</b> (что реально имеют в виду), <b>глубина</b> (какой страх там сидит).</p>
+
+      <div class="mask-card">
+        <div class="mask-title">пример с «дорого»</div>
+        <div class="mask-row"><span class="mask-chip">поверхность</span>слишком высокий прайс</div>
+        <div class="mask-row"><span class="mask-chip">маска</span>не вижу, как эти деньги вернутся обратно</div>
+        <div class="mask-row"><span class="mask-chip">глубина</span>страх потратить бюджет впустую + недоверие к результату</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--red);">как не надо</span>сразу предлагать скидку — это моментальный проигрыш ценности</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--green);">как надо</span>показать расчёт окупаемости и примеры, как вложения вернутся</div>
+      </div>
+
+      <div class="mask-card">
+        <div class="mask-title">пример с «у знакомого дешевле»</div>
+        <div class="mask-row"><span class="mask-chip">поверхность</span>на рынке есть цена ниже</div>
+        <div class="mask-row"><span class="mask-chip">маска</span>ищу повод не платить именно вам</div>
+        <div class="mask-row"><span class="mask-chip">глубина</span>не понимает разницу в качестве и сервисе между предложениями</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--red);">как не надо</span>демпинговать в ответ до цены знакомого</div>
+        <div class="mask-row"><span class="mask-chip" style="color:var(--green);">как надо</span>спросите, что входит в ту цену: правки, поддержка, сроки — обычно там урезанный сервис</div>
+      </div>
+
+      <div class="task-box"><b>задание:</b> выпишите 5 возражений, которые слышите чаще всего, и разложите каждое на поверхность/маску/глубину.</div>
+    </section>
+
+    <section class="block" id="v5-03">
+      <div class="sec-head"><span class="sec-num">03</span><h3 class="sec-title">Структура простого контракта</h3></div>
+      <div class="template-box">
+        <div class="template-label">минимум, который фиксируется письменно</div>
+        <pre>1. что именно делаем — список страниц/функций конкретно
+2. сроки по этапам — дизайн / вёрстка / правки / запуск
+3. стоимость и график оплаты — например 30% аванс, 40% после дизайна, 30% после запуска
+4. количество раундов правок, включённых в цену
+5. что происходит при задержке ответа клиента
+6. кто предоставляет тексты и фото — обычно клиент</pre>
+      </div>
+    </section>
+
+    <section class="block" id="v5-04">
+      <div class="sec-head"><span class="sec-num">04</span><h3 class="sec-title">Как закрывать сделку</h3></div>
+      <ul class="dash-list">
+        <li>ставьте мягкий дедлайн: «предложение актуально до {{дата}}, дальше пересчитаю с учётом загрузки»</li>
+        <li>один follow-up через 2-3 дня после КП — «видели предложение, остались вопросы?»</li>
+        <li>никогда не начинайте работу без предоплаты, даже с «надёжными» клиентами — это стандарт, а не недоверие</li>
+      </ul>
+      <div class="quote-box">
+        <p>возражение — это не отказ.<br>это <span class="hl">сомнение, которое просит убеждения</span>.<br>умеешь закрывать — растёшь в доходе без роста трафика.</p>
+      </div>
+    </section>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#vetka-4">← Ветка 4: ИИ в коде</a>
+      <a class="nav-btn" href="#vetka-6">Ветка 6: Инструменты →</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<!-- ======================= VETKA 6 ======================= -->
+<div class="page" id="page-vetka-6">
+  <div class="wrap">
+    <div class="branch-tag">Ветка 6 из 6</div>
+    <h2 class="branch-title">Ветка 6: Инструменты</h2>
+    <p class="branch-lead">минимальный стек и ежедневная дисциплина решают больше, чем количество купленных курсов. вот что реально нужно на старте.</p>
+
+    <div class="subtoc-grid">
+      <a class="subtoc-item" href="#v6-01"><b>01</b>&nbsp; минимальный стек</a>
+      <a class="subtoc-item" href="#v6-02"><b>02</b>&nbsp; ежедневный чек-лист</a>
+    </div>
+    <hr class="hr">
+
+    <section class="block" id="v6-01">
+      <div class="sec-head"><span class="sec-num">01</span><h3 class="sec-title">Минимальный стек для старта</h3></div>
+      <table class="data-table">
+        <tr><th>Категория</th><th>Инструмент</th><th>Зачем</th></tr>
+        <tr><td>ИИ-ассистент</td><td>Claude</td><td>тексты, код, письма, переговоры</td></tr>
+        <tr><td>Разработка</td><td>Cursor / VS Code</td><td>код с ИИ-подсказками</td></tr>
+        <tr><td>Хостинг</td><td>Vercel / Netlify</td><td>бесплатный быстрый запуск сайтов</td></tr>
+        <tr><td>Дизайн</td><td>Figma</td><td>макеты до вёрстки</td></tr>
+        <tr><td>Задачи</td><td>Notion / Trello</td><td>клиенты и этапы проектов в порядке</td></tr>
+        <tr><td>Оплата</td><td>Stripe / эквайринг</td><td>приём предоплаты и финальной оплаты</td></tr>
+      </table>
+      <div class="note-box">не покупайте платные тарифы, пока не закроете первого клиента. весь стек выше бесплатен для первых 3-5 проектов.</div>
+    </section>
+
+    <section class="block" id="v6-02">
+      <div class="sec-head"><span class="sec-num">02</span><h3 class="sec-title">Ежедневный чек-лист</h3></div>
+      <div class="sec-sub">15-30 минут в день — стабильный поток клиентов</div>
+      <ul class="checklist">
+        <li><span class="box"></span>найти и добавить в таблицу 3-5 новых потенциальных клиентов</li>
+        <li><span class="box"></span>отправить 3-5 холодных писем</li>
+        <li><span class="box"></span>ответить на все входящие в течение дня</li>
+        <li><span class="box"></span>один follow-up тем, кто не ответил 2-3 дня назад</li>
+        <li><span class="box"></span>15 минут — учиться новому ИИ-инструменту или приёму</li>
+      </ul>
+      <div class="task-box"><b>задание:</b> заведите аккаунты из стека выше и держите чек-лист там, где будете видеть его каждое утро.</div>
+    </section>
+
+    <div class="quote-box" style="padding:34px 26px;">
+      <div class="sec-sub" style="justify-content:center;text-align:center;">курс окончен</div>
+      <p style="font-size:26px;line-height:1.3;margin-bottom:10px;">Первый клиент почти никогда<br>не приходит из воздуха</p>
+      <p style="font-weight:400;font-size:14.5px;color:var(--text-dim);">он приходит из системы: письма → КП → цена → возражение → контракт.<br>держитесь чек-листа — и результат появится быстрее, чем кажется.</p>
+    </div>
+
+    <div class="footer-nav">
+      <a class="nav-btn home" href="#vetka-5">← Ветка 5: Переговоры</a>
+      <a class="nav-btn" href="#cover">К оглавлению ☰</a>
+    </div>
+    <div class="page-footer">Фриланс-сайты через ИИ · AI WORK</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var pageIds = ['cover','vetka-1','vetka-2','vetka-3','vetka-4','vetka-5','vetka-6'];
+  var pills = document.querySelectorAll('#navPills .pill[data-p]');
+
+  function route(){
+    var hash = location.hash.replace('#','');
+    if (pageIds.indexOf(hash) === -1) {
+      if (hash) {
+        var target = document.getElementById(hash);
+        if (target) { target.scrollIntoView({behavior:'smooth', block:'start'}); }
+        return;
+      }
+      hash = 'cover';
+    }
+    pageIds.forEach(function(id){
+      var el = document.getElementById('page-' + id);
+      if (el) el.classList.toggle('active', id === hash);
+    });
+    pills.forEach(function(p){
+      p.classList.toggle('current', p.getAttribute('data-p') === hash);
+    });
+    window.scrollTo({top:0, behavior:'auto'});
+  }
+
+  window.addEventListener('hashchange', route);
+  window.addEventListener('DOMContentLoaded', route);
+})();
+</script>
+
+</body>
+</html>
